@@ -94,7 +94,7 @@ const ChooseProjectPage = () => {
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Choose Project</h1>
       
-      {hasProjects && (
+      {!hasProjects && (
         <>
           <button onClick={() => setShowCreateForm(true)} className="btn">Create New Project</button>
           <button onClick={() => setShowJoinForm(true)} className="btn">Join Existing Project</button>

@@ -1,9 +1,8 @@
-// src/pages/SignUp.jsx
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../redux/authSlice'; // Redux action
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -30,9 +29,12 @@ const SignUp = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      // Save user information to your database
 
-      dispatch(setUser({ uid: user.uid, email: user.email, name }));
+      // Update the user's profile with their name
+      await updateProfile(user, { displayName: name });
+
+      // Dispatch the updated user data to Redux
+      dispatch(setUser({ uid: user.uid, email: user.email, name: user.displayName }));
 
       navigate('/chooseprojectpage');
     } catch (err) {
