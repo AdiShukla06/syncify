@@ -10,7 +10,7 @@ const Home = () => {
 
   // Calculate task counts
   const totalTasks = tasks.length;
-  const remainingTasks = tasks.filter(task => task.status !== 'completed').length;
+  const remainingTasks = tasks.filter(task => task.status !== 'Completed').length;
 
   return (
     <div>

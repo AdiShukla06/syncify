@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
-import { setTasks, addTask } from '../redux/tasksSlice';
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { setTasks, addTask, updateTask } from '../redux/tasksSlice';
 import { Timestamp } from 'firebase/firestore';
 
 const TaskView = () => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskDeadline, setTaskDeadline] = useState('');
-  const [taskStatus, setTaskStatus] = useState('To Do'); // New state for task status
-  const tasks = useSelector((state) => state.tasks.allTasks); // Get tasks from Redux store
+  const [taskStatus, setTaskStatus] = useState('To Do');
+  const [editingTask, setEditingTask] = useState(null); // State to track the task being edited
+  const tasks = useSelector((state) => state.tasks.allTasks);
   const projectId = useSelector((state) => state.project.currentProject.id);
   const firestore = getFirestore();
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const TaskView = () => {
             createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : null,
           };
         });
-        dispatch(setTasks(tasksList));  // Update Redux store with serialized tasks
+        dispatch(setTasks(tasksList));
       } catch (err) {
         console.error('Error fetching tasks:', err);
       }
@@ -42,19 +43,56 @@ const TaskView = () => {
         name: taskName,
         description: taskDescription,
         deadline: taskDeadline,
-        status: taskStatus, // Include status in the task object
+        status: taskStatus,
         createdAt: Timestamp.now(),
       };
       const docRef = await addDoc(collection(firestore, 'projects', projectId, 'tasks'), newTask);
       dispatch(addTask({ id: docRef.id, ...newTask, createdAt: newTask.createdAt.toDate().toISOString() }));
+      resetForm();
     } catch (err) {
       console.error('Error adding task:', err);
     }
   };
 
+  const handleUpdateTask = async (e) => {
+    e.preventDefault();
+    if (!editingTask) return;
+
+    try {
+      const updatedTask = {
+        name: taskName,
+        description: taskDescription,
+        deadline: taskDeadline,
+        status: taskStatus,
+      };
+      const taskRef = doc(firestore, 'projects', projectId, 'tasks', editingTask.id);
+      await updateDoc(taskRef, updatedTask);
+      dispatch(updateTask({ id: editingTask.id, updates: updatedTask }));
+      resetForm();
+    } catch (err) {
+      console.error('Error updating task:', err);
+    }
+  };
+
+  const resetForm = () => {
+    setTaskName('');
+    setTaskDescription('');
+    setTaskDeadline('');
+    setTaskStatus('To Do');
+    setEditingTask(null);
+  };
+
+  const handleEditClick = (task) => {
+    setTaskName(task.name);
+    setTaskDescription(task.description);
+    setTaskDeadline(task.deadline);
+    setTaskStatus(task.status);
+    setEditingTask(task);
+  };
+
   return (
     <>
-      <form onSubmit={handleCreateTask}>
+      <form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
         <input
           type="text"
           value={taskName}
@@ -81,7 +119,8 @@ const TaskView = () => {
           <option value="On Going">On Going</option>
           <option value="Completed">Completed</option>
         </select>
-        <button type="submit">Create Task</button>
+        <button type="submit">{editingTask ? 'Update Task' : 'Create Task'}</button>
+        {editingTask && <button onClick={resetForm}>Cancel Edit</button>}
       </form>
 
       {/* Task List */}
@@ -95,6 +134,7 @@ const TaskView = () => {
               <p>Deadline: {task.deadline}</p>
               <p>Status: {task.status}</p>
               <p>Created At: {task.createdAt}</p>
+              <button onClick={() => handleEditClick(task)}>Edit</button>
             </li>
           ))}
         </ul>
