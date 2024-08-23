@@ -1,17 +1,32 @@
+// src/components/TeamChat.jsx
 import React, { useEffect, useState, useRef } from 'react';
-import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
-
-const socket = io('http://localhost:3001');
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
+import socket from '../socket';
 
 const TeamChat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [userName, setUserName] = useState('');
   const projectId = useSelector((state) => state.project.currentProject.id);
-  const user = useSelector((state) => state.auth.user); // Get the current user from Redux state
+  const user = useSelector((state) => state.auth.user);
   const firestore = getFirestore();
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (user?.uid) {
+        const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+        if (userDoc.exists()) {
+          setUserName(userDoc.data().name);
+        } else {
+          setUserName('Anonymous');
+        }
+      }
+    };
+
+    fetchUserName();
+  }, [user?.uid, firestore]);
 
   useEffect(() => {
     socket.emit('joinProject', projectId);
@@ -22,7 +37,7 @@ const TeamChat = () => {
     });
 
     return () => {
-      socket.disconnect();
+      socket.off('receiveMessage'); // Clean up the event listener when component unmounts
     };
   }, [projectId]);
 
@@ -40,21 +55,17 @@ const TeamChat = () => {
   }, [firestore, projectId]);
 
   const sendMessage = async () => {
-    // Ensure the sender's name is defined
-    const senderName = user?.name || "Anonymous"; // Fallback to "Anonymous" if user.name is undefined
+    const senderName = userName || "Anonymous";
 
     const messageData = {
       projectId,
       message,
-      sender: senderName, // Use the validated name
+      sender: senderName,
       timestamp: new Date().toISOString(),
     };
 
     try {
-      // Save to Firebase
       await addDoc(collection(firestore, 'projects', projectId, 'messages'), messageData);
-
-      // Emit message to other clients
       socket.emit('sendMessage', messageData);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -82,6 +93,7 @@ const TeamChat = () => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={(e) => { if (e.key === 'Enter') sendMessage(); }} // Send message on Enter key press
         />
         <button onClick={sendMessage}>Send</button>
       </div>
