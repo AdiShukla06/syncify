@@ -1,8 +1,8 @@
 // src/pages/ChooseProjectPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { addProject, setCurrentProject } from '../redux/projectSlice';
+import { addProject, setCurrentProject, setProjects } from '../redux/projectSlice';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, getDocs, collection, query, where, arrayUnion } from 'firebase/firestore';
 import { auth } from '../firebase-config';
 
@@ -14,12 +14,10 @@ const ChooseProjectPage = () => {
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
-  const [newProjectId, setNewProjectId] = useState('');
-  const [newProjectPasskey, setNewProjectPasskey] = useState('');
   const [joinProjectId, setJoinProjectId] = useState('');
   const [joinProjectPasskey, setJoinProjectPasskey] = useState('');
   const [error, setError] = useState('');
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjectsState] = useState([]);
 
   const firestore = getFirestore();
 
@@ -32,12 +30,15 @@ const ChooseProjectPage = () => {
       const projectsQuery = query(collection(firestore, 'projects'), where('members', 'array-contains', userId));
       const querySnapshot = await getDocs(projectsQuery);
       const projectsList = querySnapshot.docs.map(doc => doc.data());
-      setProjects(projectsList);
+      setProjectsState(projectsList);
       setHasProjects(projectsList.length > 0);
+
+      // Dispatch the list of projects to Redux
+      dispatch(setProjects(projectsList));
     };
 
     fetchProjects();
-  }, [firestore]);
+  }, [firestore, dispatch]);
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
@@ -53,8 +54,16 @@ const ChooseProjectPage = () => {
         members: [auth.currentUser.uid],
       });
 
+      // Dispatch the new project to Redux
       dispatch(addProject({ id: projectId, name: projectName }));
       dispatch(setCurrentProject({ id: projectId }));
+
+      // Fetch the updated list of projects
+      const userId = auth.currentUser.uid;
+      const projectsQuery = query(collection(firestore, 'projects'), where('members', 'array-contains', userId));
+      const querySnapshot = await getDocs(projectsQuery);
+      const projectsList = querySnapshot.docs.map(doc => doc.data());
+      dispatch(setProjects(projectsList));  // Update the project list in Redux
 
       navigate('/dashboard');
     } catch (err) {
@@ -94,14 +103,15 @@ const ChooseProjectPage = () => {
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Choose Project</h1>
       
-      {!hasProjects && (
+      {hasProjects && (
         <>
-          <button onClick={() => setShowCreateForm(true)} className="btn">Create New Project</button>
-          <button onClick={() => setShowJoinForm(true)} className="btn">Join Existing Project</button>
+          <button onClick={() => (setShowCreateForm((prev) => !prev))} className="btn">Create New Project</button>
+          <button onClick={() => setShowJoinForm((prev) => !prev)} className="btn">Join Existing Project</button>
         </>
       )}
 
       {showCreateForm && (
+        
         <form onSubmit={handleCreateProject} className="space-y-4">
           <h2 className="text-xl font-semibold">Create New Project</h2>
           <div>
