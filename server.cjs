@@ -38,11 +38,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async (messageData) => {
-    const { projectId, message, timestamp } = messageData;
+    const { projectId, message, timestamp, sender } = messageData;
 
     try {
       // Save to Firestore
       await firestore.collection('projects').doc(projectId).collection('messages').add({
+        sender,
         message,
         timestamp
       });
