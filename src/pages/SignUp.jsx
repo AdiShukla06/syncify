@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../redux/authSlice'; // Redux action
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore'; // Firestore import
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -14,6 +15,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const auth = getAuth();
+  const firestore = getFirestore(); // Initialize Firestore
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +35,13 @@ const SignUp = () => {
       // Update the user's profile with their name
       await updateProfile(user, { displayName: name });
 
+      // Store user data in Firestore
+      await setDoc(doc(firestore, 'users', user.uid), {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+      });
+
       // Dispatch the updated user data to Redux
       dispatch(setUser({ uid: user.uid, email: user.email, name: user.displayName }));
 
@@ -48,6 +57,8 @@ const SignUp = () => {
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Input fields for name, email, and password */}
+        {/* Sign up button */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
           <input
