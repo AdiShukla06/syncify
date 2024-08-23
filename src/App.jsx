@@ -1,6 +1,6 @@
 // src/App.jsx or src/Routes.jsx
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SignUp from './pages/SignUp';
+import SignUp from './pages/Signup';
 import Login from './pages/Login';
 import ChooseProjectPage from './pages/ChooseProjectPage'; // Assuming you will create this
 import Dashboard from './pages/Dashboard';
