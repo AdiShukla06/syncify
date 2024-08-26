@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteUser } from 'firebase/auth';
 import { auth } from '../firebase-config'; 
 import { setTheme } from '../redux/authSlice'; 
-import { doc, deleteDoc, arrayRemove, updateDoc} from "firebase/firestore";
+import { doc, deleteDoc, arrayRemove, updateDoc, getDoc} from "firebase/firestore";
 import {clearUser} from '../redux/authSlice';
 import {firestore} from '../firebase-config';
 
@@ -36,10 +36,23 @@ const SettingsPage = () => {
         // Reference to the project document where the member needs to be removed
         const projectDocRef = doc(firestore, 'projects', currentProject.id);
   
-        // Remove the user from the 'members' array
-        await updateDoc(projectDocRef, {
-          members: arrayRemove(user.uid),
-        });
+        // Get the project document to check the number of members
+        const projectDoc = await getDoc(projectDocRef);
+  
+        if (projectDoc.exists()) {
+          const projectData = projectDoc.data();
+          const members = projectData.members || [];
+  
+          if (members.length === 1) {
+            // If only one member, delete the entire project
+            await deleteDoc(projectDocRef);
+          } else {
+            // If more than one member, just remove the user from the 'members' array
+            await updateDoc(projectDocRef, {
+              members: arrayRemove(user.uid),
+            });
+          }
+        }
   
         // Delete the current user from Firebase Authentication
         await deleteUser(auth.currentUser);
@@ -57,6 +70,8 @@ const SettingsPage = () => {
       console.error('Error deleting account:', error);
     }
   };
+  
+
   return (
     <div className="settings-page">
       <h2>Settings</h2>
