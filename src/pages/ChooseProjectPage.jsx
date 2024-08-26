@@ -45,26 +45,21 @@ const ChooseProjectPage = () => {
     try {
       const projectId = Date.now().toString();
       const passkey = Math.random().toString(36).slice(2);
-
-      await setDoc(doc(firestore, 'projects', projectId), {
+  
+      const newProject = {
         name: projectName,
         description: projectDescription,
         id: projectId,
         passkey: passkey,
         members: [auth.currentUser.uid],
-      });
-
+      };
+  
+      await setDoc(doc(firestore, 'projects', projectId), newProject);
+  
       // Dispatch the new project to Redux
-      dispatch(addProject({ id: projectId, name: projectName, description: projectDescription }));
-      dispatch(setCurrentProject({ id: projectId }));
-
-      // Fetch the updated list of projects
-      const userId = auth.currentUser.uid;
-      const projectsQuery = query(collection(firestore, 'projects'), where('members', 'array-contains', userId));
-      const querySnapshot = await getDocs(projectsQuery);
-      const projectsList = querySnapshot.docs.map(doc => doc.data());
-      dispatch(setProjects(projectsList));  // Update the project list in Redux
-
+      dispatch(addProject(newProject));
+      dispatch(setCurrentProject(newProject));
+  
       navigate('/dashboard');
     } catch (err) {
       setError('Error creating project');
