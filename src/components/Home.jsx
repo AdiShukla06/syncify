@@ -1,6 +1,8 @@
 // src/components/Home.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import {doc,  getDoc } from 'firebase/firestore';
+import {firestore} from '../firebase-config';
 
 const Home = () => {
   const project = useSelector((state) => state.project.currentProject); // Get current project from Redux
@@ -11,6 +13,12 @@ const Home = () => {
   // Calculate task counts
   const totalTasks = tasks.length;
   const remainingTasks = tasks.filter(task => task.status !== 'Completed').length;
+
+
+
+  
+
+  
 
   return (
     <div>
