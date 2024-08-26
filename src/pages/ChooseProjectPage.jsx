@@ -55,7 +55,7 @@ const ChooseProjectPage = () => {
       });
 
       // Dispatch the new project to Redux
-      dispatch(addProject({ id: projectId, name: projectName }));
+      dispatch(addProject({ id: projectId, name: projectName, description: projectDescription }));
       dispatch(setCurrentProject({ id: projectId }));
 
       // Fetch the updated list of projects
@@ -103,7 +103,7 @@ const ChooseProjectPage = () => {
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Choose Project</h1>
       
-      {hasProjects && (
+      {!hasProjects && (
         <>
           <button onClick={() => (setShowCreateForm((prev) => !prev))} className="btn">Create New Project</button>
           <button onClick={() => setShowJoinForm((prev) => !prev)} className="btn">Join Existing Project</button>
@@ -172,6 +172,8 @@ const ChooseProjectPage = () => {
 
       {hasProjects && (
         <div>
+          <button onClick={() => (setShowCreateForm((prev) => !prev))} className="btn">Create New Project</button>
+          <button onClick={() => setShowJoinForm((prev) => !prev)} className="btn">Join Existing Project</button>
           <h2 className="text-xl font-semibold">Your Projects</h2>
           <ul className="space-y-2">
             {projects.map(project => (
