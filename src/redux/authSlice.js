@@ -6,6 +6,7 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     status: 'idle',
+    theme: 'light', // Add theme to the initial state
   },
   reducers: {
     setUser: (state, action) => {
@@ -16,8 +17,11 @@ const authSlice = createSlice({
       state.user = null;
       state.status = 'idle';
     },
+    setTheme: (state, action) => {
+      state.theme = action.payload; // Add this reducer to manage theme
+    },
   },
 });
 
-export const { setUser, clearUser } = authSlice.actions;
+export const { setUser, clearUser, setTheme } = authSlice.actions;
 export default authSlice.reducer;
