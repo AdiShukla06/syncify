@@ -52,6 +52,7 @@ const ChooseProjectPage = () => {
         id: projectId,
         passkey: passkey,
         members: [auth.currentUser.uid],
+        leader: auth.currentUser.displayName,
       };
   
       await setDoc(doc(firestore, 'projects', projectId), newProject);
