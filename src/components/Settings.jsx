@@ -3,25 +3,42 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteUser } from 'firebase/auth';
 import { auth } from '../firebase-config'; 
-import { setTheme } from '../redux/authSlice'; 
-import { doc, deleteDoc, arrayRemove, updateDoc, getDoc} from "firebase/firestore";
-import {clearUser} from '../redux/authSlice';
-import {firestore} from '../firebase-config';
+import { setTheme, clearUser } from '../redux/authSlice'; 
+import { doc, deleteDoc, arrayRemove, updateDoc, getDoc } from "firebase/firestore";
+import { firestore } from '../firebase-config';
 
 const SettingsPage = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const currentTheme = useSelector((state) => state.auth.theme);
-  const [theme, setThemeState] = useState(currentTheme);
-  const navigate = useNavigate();
-
   const currentProject = useSelector((state) => state.project.currentProject);
+  const [theme, setThemeState] = useState(currentTheme);
+  const [isLeader, setIsLeader] = useState(false); // State to check if the user is the leader
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme') || 'light';
     setThemeState(storedTheme);
     dispatch(setTheme(storedTheme)); // Initialize theme in Redux state
-  }, [dispatch]);
+
+    // Check if the current user is the project leader
+    if (currentProject && user) {
+      const checkLeader = async () => {
+        const projectDocRef = doc(firestore, 'projects', currentProject.id);
+        const projectDoc = await getDoc(projectDocRef);
+
+        if (projectDoc.exists()) {
+          const projectData = projectDoc.data();
+          // console.log(projectData.members[0], user.uid);
+          if (projectData.members[0] === user.uid) {
+            setIsLeader(true); // Set the user as leader
+          }
+        }
+      };
+
+      checkLeader();
+    }
+  }, [dispatch, currentProject, user]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -70,7 +87,18 @@ const SettingsPage = () => {
       console.error('Error deleting account:', error);
     }
   };
-  
+
+  const deleteProject = async () => {
+    try {
+      if (currentProject) {
+        const projectDocRef = doc(firestore, 'projects', currentProject.id);
+        await deleteDoc(projectDocRef);
+        navigate('/chooseprojectpage'); // Redirect after deleting the project
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
 
   return (
     <div className="settings-page">
@@ -90,6 +118,16 @@ const SettingsPage = () => {
           Delete Account
         </button>
       </div>
+
+      {isLeader && (
+        <div className="project-deletion">
+          <h3>Delete Project</h3>
+          <p>Warning: This will delete the entire project and cannot be undone.</p>
+          <button onClick={deleteProject} className="delete-button">
+            Delete Project
+          </button>
+        </div>
+      )}
     </div>
   );
 };
