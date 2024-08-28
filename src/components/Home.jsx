@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '../firebase-config';
 
 const Home = () => {
   const project = useSelector((state) => state.project.currentProject); // Get current project from Redux
   const tasks = useSelector((state) => state.tasks.allTasks); // Get tasks from Redux
-  const [loading, setLoading] = useState(true);
+  const [leaderName, setLeaderName] = useState('');
 
   useEffect(() => {
-    if (project && tasks) {
-      setLoading(false); // Set loading to false when data is available
-    }
-  }, [project, tasks]);
+    const fetchLeaderName = async () => {
+      if (project) {
+        const leaderDocRef = doc(firestore, 'projects', project.id);
+        const leaderDoc = await getDoc(leaderDocRef);
 
-  if (loading) return <div>Loading...</div>; // Handle missing project data
+        if (leaderDoc.exists()) {
+          const leaderData = leaderDoc.data();
+          setLeaderName(leaderData.leader || 'Unknown Leader');
+        }
+      }
+    };
+
+    fetchLeaderName();
+  }, [project]);
+
+  // Ensure project is defined before accessing its properties
+  if (!project) {
+    return <div>Loading project data...</div>;
+  }
 
   // Calculate task counts
   const totalTasks = tasks.length;
@@ -24,6 +39,7 @@ const Home = () => {
       <div className="bg-white p-4 rounded shadow">
         <h2 className="text-xl font-semibold">Project Name: {project.name}</h2>
         <p>Description: {project.description}</p>
+        <p>Leader: {leaderName || 'Unknown Leader'}</p> {/* Directly display the leader's name */}
         <p>Deadline: {project.deadline || 'Not set'}</p>
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Task Overview</h3>
