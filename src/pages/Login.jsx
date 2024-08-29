@@ -1,10 +1,12 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../redux/authSlice'; // Redux action
+import { setUser } from '../redux/authSlice';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { useAuth } from '../context/AuthContext'; // Context API
+import { motion } from 'framer-motion';
+import BackgroundImage from '../assets/landingpageimages/bg2.jpg'; // Replace with your background image path
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,61 +20,83 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     setError('');
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      // Dispatch action to update Redux state
       dispatch(setUser({ uid: user.uid, email: user.email }));
-
-      // Redirect to ChooseProjectPage
       navigate('/chooseprojectpage');
     } catch (err) {
-      setError(err.message);
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            required
-          />
-        </div>
-        {error && <p className="text-red-500">{error}</p>}
-        <button
-          type="submit"
-          className={`w-full py-2 px-4 bg-blue-600 text-white rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={loading}
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center roboto-regular"
+      style={{ backgroundImage: `url(${BackgroundImage})` }}
+    >
+      <motion.div
+        className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg max-w-md w-full"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <h1 className="text-3xl font-bold text-center mb-8 roboto-bold">Login to Syncify</h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+            <Input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <Input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full"
+              required
+            />
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <Button
+            type="submit"
+            className={`w-full py-2 px-4 text-white rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Logging In...' : 'Login'}
+          </Button>
+        </form>
+        <motion.div
+          className="text-center mt-3"
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.3 }}
         >
-          {loading ? 'Logging In...' : 'Login'}
-        </button>
-      </form>
+          <p className="text-gray-700">
+            Don't have an account?{' '}
+            <span
+              onClick={() => navigate('/signup')}
+              className="text-blue-500 cursor-pointer"
+            >
+              Sign up
+            </span>
+          </p>
+        </motion.div>
+        
+      </motion.div>
+      
     </div>
   );
 };
