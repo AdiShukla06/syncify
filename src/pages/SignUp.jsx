@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../redux/authSlice'; // Redux action
+import { setUser } from '../redux/authSlice';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore'; // Firestore import
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { motion } from 'framer-motion';
+import BackgroundImage from '../assets/landingpageimages/bg2.jpg'; // Replace with your background image path
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -15,7 +19,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const auth = getAuth();
-  const firestore = getFirestore(); // Initialize Firestore
+  const firestore = getFirestore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +36,14 @@ const SignUp = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update the user's profile with their name
       await updateProfile(user, { displayName: name });
 
-      // Store user data in Firestore
       await setDoc(doc(firestore, 'users', user.uid), {
         uid: user.uid,
         name: user.displayName,
         email: user.email,
       });
 
-      // Dispatch the updated user data to Redux
       dispatch(setUser({ uid: user.uid, email: user.email, name: user.displayName }));
 
       navigate('/chooseprojectpage');
@@ -54,54 +55,77 @@ const SignUp = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Input fields for name, email, and password */}
-        {/* Sign up button */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            required
-          />
-          <p className="mt-2 text-sm text-gray-600">Password must be at least 6 characters long</p>
-        </div>
-        {error && <p className="text-red-500">{error}</p>}
-        <button
-          type="submit"
-          className={`w-full py-2 px-4 bg-blue-600 text-white rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={loading}
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center roboto-regular"
+      style={{ backgroundImage: `url(${BackgroundImage})` }}
+    >
+      <motion.div
+        className="bg-white bg-opacity-80 p-5 rounded-lg shadow-lg max-w-md w-full"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+            <Input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-1 block w-full"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+            <Input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <Input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full"
+              required
+            />
+            <p className="mt-2 text-sm text-gray-600">Password must be at least 6 characters long</p>
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <Button
+            type="submit"
+            className={`w-full py-2 px-4 text-white rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Signing Up...' : 'Sign Up'}
+          </Button>
+        </form>
+        <motion.div
+          className="text-center mt-3"
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.3 }}
         >
-          {loading ? 'Signing Up...' : 'Sign Up'}
-        </button>
-      </form>
+          <p className="text-gray-700">
+            Already have an account?{' '}
+            <span
+              onClick={() => navigate('/login')}
+              className="text-blue-500 cursor-pointer"
+            >
+              Log in
+            </span>
+          </p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
