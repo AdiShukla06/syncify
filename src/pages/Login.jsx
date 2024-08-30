@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '../redux/authSlice';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { motion } from 'framer-motion';
-import BackgroundImage from '../assets/landingpageimages/bg2.jpg'; // Replace with your background image path
+import BackgroundImage from '../assets/landingpageimages/bg2.jpg'; 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
