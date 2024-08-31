@@ -1,0 +1,116 @@
+/* src/pages/KanbanView.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+
+.kanban-board {
+    min-height:100vh;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: rgb(15, 15, 16);
+    /* border-radius: 8px; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .kanban-column {
+    font-family: 'lato', sans-serif;
+    flex: 1;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-image: url("../assets/dashboardimages/boxbg4.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .kanban-column-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fefefe;
+    margin-bottom: 10px;
+  }
+  
+  .task-card-light {
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  .task-card-dark {
+    background-color: #000000;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .task-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .task-title-white {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 8px;
+  }
+  .task-title-dark {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+  
+  .task-description-light {
+    font-size: 1rem;
+    color: #4e5151;
+    margin-bottom: 10px;
+  }
+  .task-description-dark {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+  
+  .task-deadline {
+    font-size: 0.9rem;
+    color: #e74c3c;
+    margin-bottom: 10px;
+  }
+  
+  .task-status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .task-status-label-light {
+    font-size: 0.9rem;
+    color: #2c3e50;
+  }
+  .task-status-label-dark {
+    font-size: 0.9rem;
+    color: #ffffff;
+  }
+  
+  .task-status-select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #bdc3c7;
+    background-color: #ecf0f1;
+    font-size: 0.9rem;
+    color: #34495e;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .task-status-select:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+  
