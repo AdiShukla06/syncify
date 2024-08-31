@@ -28,30 +28,41 @@ const firestore = admin.firestore();
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigins = [
+  'https://syncify-pink.vercel.app', // Deployed Vercel app
+  'http://localhost:5173' // Local development
+   
+];
+
+// Setup CORS for Express
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
+}));
+
+// Setup CORS for Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://localhost:5173', // Local development
-      'https://syncify-pink.vercel.app' // Deployed Vercel app
-    ],
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
   }
 });
-
-app.use(cors((req, callback) => {
-  const allowedOrigins = [
-    'http://localhost:5173', // Local development
-    'https://syncify-pink.vercel.app' // Deployed Vercel app
-  ];
-  const origin = req.header('Origin');
-  if (allowedOrigins.includes(origin)) {
-    callback(null, { origin: true, credentials: true });
-  } else {
-    callback(null, { origin: false });
-  }
-}));
 
 io.on('connection', (socket) => {
   console.log('A user connected');
