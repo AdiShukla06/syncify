@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { setTasks, updateTask } from '../redux/tasksSlice';
@@ -15,10 +15,11 @@ const KanbanView = () => {
   const tasks = useSelector((state) => state.tasks.allTasks);
   const projectId = useSelector((state) => state.project.currentProject.id);
   const firestore = getFirestore();
-  const theme = useSelector((state) => state.auth.theme); 
-
+  const theme = useSelector((state) => state.auth.theme);
+  const [showInstruction, setShowInstruction] = useState(true);
 
   useEffect(() => {
+    // Fetch tasks from Firestore
     const fetchTasks = async () => {
       try {
         const tasksSnapshot = await getDocs(collection(firestore, 'projects', projectId, 'tasks'));
@@ -35,6 +36,16 @@ const KanbanView = () => {
 
     fetchTasks();
   }, [projectId, firestore, dispatch]);
+
+  useEffect(() => {
+    // Show instruction overlay only the first time component is loaded
+    const hasVisited = localStorage.getItem('kanbanViewVisited');
+    if (!hasVisited) {
+      localStorage.setItem('kanbanViewVisited', 'true');
+    } else {
+      setShowInstruction(false);
+    }
+  }, []);
 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
@@ -93,49 +104,59 @@ const KanbanView = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="kanban-board">
-        <Droppable droppableId="To Do">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="kanban-column "
-            >
-              <h2 className="kanban-column-title lato-bold text-white text-2xl">To Do</h2>
-              {renderTasks('To Do')}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-        <Droppable droppableId="On Going">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="kanban-column "
-            >
-              <h2 className="kanban-column-title lato-bold text-white text-2xl">On Going</h2>
-              {renderTasks('On Going')}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-        <Droppable droppableId="Completed">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="kanban-column"
-            >
-              <h2 className="kanban-column-title lato-bold text-white text-2xl">Completed</h2>
-              {renderTasks('Completed')}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </div>
-    </DragDropContext>
+    <div>
+      {showInstruction && (
+        <div className="instruction-overlay" onClick={() => setShowInstruction(false)}>
+          <div className="instruction-content">
+            <p>YOU CAN DRAG AND DROP TASKS</p>
+          </div>
+        </div>
+      )}
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="kanban-board">
+          <Droppable droppableId="To Do">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="kanban-column"
+              >
+                <h2 className="kanban-column-title lato-bold text-white text-2xl">To Do</h2>
+                {renderTasks('To Do')}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <Droppable droppableId="On Going">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="kanban-column"
+              >
+                <h2 className="kanban-column-title lato-bold text-white text-2xl">On Going</h2>
+                {renderTasks('On Going')}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <Droppable droppableId="Completed">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="kanban-column"
+              >
+                <h2 className="kanban-column-title lato-bold text-white text-2xl">Completed</h2>
+                {renderTasks('Completed')}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      </DragDropContext>
+    </div>
   );
 };
 
