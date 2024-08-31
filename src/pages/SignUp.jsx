@@ -21,6 +21,8 @@ const SignUp = () => {
   const auth = getAuth();
   const firestore = getFirestore();
 
+  const user = auth.currentUser;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -53,6 +55,7 @@ const SignUp = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div
