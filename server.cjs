@@ -1,13 +1,25 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const admin = require('firebase-admin');
 const cors = require('cors');
 
-const serviceAccount = require('../private.json');
+const serviceAccount = require('./private.json');
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert({
+    type: process.env.VITE_SOCKET_TYPE,
+    project_id: process.env.VITE_SOCKET_PROJECT_ID,
+    private_key_id: process.env.VITE_SOCKET_PRIVATE_KEY_ID,
+    private_key: process.env.VITE_SOCKET_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    client_email: process.env.VITE_SOCKET_CLIENT_EMAIL,
+    client_id: process.env.VITE_SOCKET_CLIENT_ID,
+    auth_uri: process.env.VITE_SOCKET_AUTH_URI,
+    token_uri: process.env.VITE_SOCKET_TOKEN_URI,
+    auth_provider_x509_cert_url: process.env.VITE_SOCKET_AUTH_PROVIDER_X509_CERT_URL,
+    client_x509_cert_url: process.env.VITE_SOCKET_CLIENT_X509_CERT_URL,
+  })
 });
 
 const firestore = admin.firestore();
