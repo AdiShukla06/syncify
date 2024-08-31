@@ -16,6 +16,8 @@ import BackgroundImage3 from "../assets/dashboardimages/boxbg3.jpg";
 import BackgroundImage4 from "../assets/dashboardimages/boxbg4.jpg";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { setTheme, clearUser } from '../redux/authSlice'; 
+
 
 const TaskView = () => {
   const [taskName, setTaskName] = useState("");
@@ -27,6 +29,8 @@ const TaskView = () => {
   const projectId = useSelector((state) => state.project.currentProject.id);
   const firestore = getFirestore();
   const dispatch = useDispatch();
+  const theme = useSelector((state) => state.auth.theme); 
+
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -131,11 +135,11 @@ const TaskView = () => {
   };
 
   return (
-    <div className="bg-gray-950 min-h-screen p-6">
+    <div className={` min-h-screen p-6 ${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-950 text-gray-100'}`}>
 
 
-      <div className="max-w-lg mx-auto bg-black p-4 rounded-lg shadow-lg border border-gray-700">
-        <h2 className="text-xl font-semibold text-white mb-3 lato-bold">
+      <div className={`max-w-lg mx-auto p-4 rounded-lg shadow-lg border border-gray-700 ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-black text-gray-100'}`}>
+        <h2 className={`text-xl font-semibold  mb-3 lato-bold ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-black text-gray-100'}` }>
           {editingTask ? "Edit Task" : "Create Task"}
         </h2>
         <form
@@ -148,26 +152,26 @@ const TaskView = () => {
             onChange={(e) => setTaskName(e.target.value)}
             placeholder="Task Name"
             required
-            className="w-full p-3 border rounded-lg border-gray-600 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            className={`w-full p-3 border rounded-lg border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition ${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'}`}
           />
           <textarea
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
             placeholder="Task Description"
             required
-            className="w-full p-3 border rounded-lg border-gray-600 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            className={`w-full p-3 border rounded-lg border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition ${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'}`}
             rows="3"
           />
           <input
             type="date"
             value={taskDeadline}
             onChange={(e) => setTaskDeadline(e.target.value)}
-            className="w-full p-3 border rounded-lg border-gray-600 bg-black text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            className={`w-full p-3 border rounded-lg border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition ${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'}`}
           />
           <select
             value={taskStatus}
             onChange={(e) => setTaskStatus(e.target.value)}
-            className="w-full p-3 border rounded-lg border-gray-600 bg-black text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            className={`w-full p-3 border rounded-lg border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition ${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'}`}
           >
             <option value="To Do">To Do</option>
             <option value="On Going">On Going</option>
