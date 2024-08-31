@@ -26,7 +26,7 @@ const Login = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      dispatch(setUser({ uid: user.uid, email: user.email }));
+      dispatch(setUser({ uid: user.uid, email: user.email, name: user.displayName }));
       navigate('/chooseprojectpage');
     } catch (err) {
       setError("Invalid email or password");
