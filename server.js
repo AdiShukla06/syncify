@@ -7,8 +7,6 @@ import { Server } from 'socket.io';
 import admin from 'firebase-admin';
 import cors from 'cors';
 
-
-
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -30,9 +28,13 @@ const firestore = admin.firestore();
 const app = express();
 const server = http.createServer(app);
 
+// Update the CORS configuration to include your Vercel app URL
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: [
+      'http://localhost:5173', // Local development
+      'https://syncify-pink.vercel.app' // Deployed Vercel app
+    ],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
@@ -40,7 +42,10 @@ const io = new Server(server, {
 });
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173', // Local development
+    'https://syncify-pink.vercel.app' // Deployed Vercel app
+  ],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
   credentials: true,
