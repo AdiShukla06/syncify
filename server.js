@@ -28,7 +28,6 @@ const firestore = admin.firestore();
 const app = express();
 const server = http.createServer(app);
 
-// Update the CORS configuration to include your Vercel app URL
 const io = new Server(server, {
   cors: {
     origin: [
@@ -41,14 +40,17 @@ const io = new Server(server, {
   }
 });
 
-app.use(cors({
-  origin: [
+app.use(cors((req, callback) => {
+  const allowedOrigins = [
     'http://localhost:5173', // Local development
     'https://syncify-pink.vercel.app' // Deployed Vercel app
-  ],
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true,
+  ];
+  const origin = req.header('Origin');
+  if (allowedOrigins.includes(origin)) {
+    callback(null, { origin: true, credentials: true });
+  } else {
+    callback(null, { origin: false });
+  }
 }));
 
 io.on('connection', (socket) => {
