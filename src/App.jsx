@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import LandingPage from './pages/LandingPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { useSelector } from 'react-redux';
 
 const App = () => {
   const location = useLocation();
@@ -14,6 +15,7 @@ const App = () => {
   // Define paths where Header and Footer should not appear
   const noHeaderFooterPaths = ['/dashboard'];
   const noHeaderPaths = ['/', '/dashboard']
+  const theme = useSelector((state) => state.auth.theme); // Get theme from Redux
 
   return (
     <>
