@@ -63,7 +63,8 @@ const ChooseProjectPage = () => {
         passkey: passkey,
         members: [auth.currentUser.uid],
         leader: auth.currentUser.displayName,
-        deadline: deadline
+        deadline: deadline,
+        team: [auth.currentUser.displayName]
       };
 
       await setDoc(doc(firestore, 'projects', projectId), newProject);
@@ -94,7 +95,8 @@ const ChooseProjectPage = () => {
       }
 
       await updateDoc(projectRef, {
-        members: arrayUnion(auth.currentUser.uid)
+        members: arrayUnion(auth.currentUser.uid),
+        team: arrayUnion(auth.currentUser.displayName)
       });
 
       dispatch(setCurrentProject(projectDoc.data()));
