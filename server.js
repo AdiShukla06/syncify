@@ -1,12 +1,15 @@
-require('dotenv').config();
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const admin = require('firebase-admin');
-const cors = require('cors');
+import dotenv from 'dotenv';
+dotenv.config();
 
-const serviceAccount = require('./private.json');
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import admin from 'firebase-admin';
+import cors from 'cors';
 
+
+
+// Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert({
     type: process.env.VITE_SOCKET_TYPE,
@@ -26,6 +29,7 @@ const firestore = admin.firestore();
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:5173',
