@@ -29,7 +29,7 @@ const ChooseProjectPage = () => {
   const [joinProjectPasskey, setJoinProjectPasskey] = useState('');
   const [error, setError] = useState('');
   const [projects, setProjectsState] = useState([]);
-  const [deadline, setDeadline] = useState(null)
+  const [deadline, setDeadline] = useState(null);
 
   const firestore = getFirestore();
 
@@ -109,152 +109,172 @@ const ChooseProjectPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center pt-20 "
+      className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center pt-20"
       style={{ backgroundImage: `url(${BackgroundImage})` }}
     >
-      <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg max-w-md mx-auto mt-12 mb-16">
-        <h1 className="text-3xl font-bold mb-6 text-center">Choose Project</h1>
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+        <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg max-w-md mx-auto mt-12 mb-16 flex-1">
+          <h1 className="text-3xl font-bold mb-6 text-center">Choose Project</h1>
 
-        {!hasProjects && (
-          <div className="flex flex-col space-y-4">
-            <button
-              onClick={() => {
-                setShowCreateForm((prev) => !prev);
-                setShowJoinForm(false);
-              }}
-              className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
-            >
-              Create New Project
-            </button>
-            <button
-              onClick={() => {
-                setShowJoinForm((prev) => !prev);
-                setShowCreateForm(false);
-              }}
-              className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300"
-            >
-              Join Existing Project
-            </button>
-          </div>
-        )}
+          {!hasProjects && (
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={() => {
+                  setShowCreateForm((prev) => !prev);
+                  setShowJoinForm(false);
+                }}
+                className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                Create New Project
+              </button>
+              <button
+                onClick={() => {
+                  setShowJoinForm((prev) => !prev);
+                  setShowCreateForm(false);
+                }}
+                className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300"
+              >
+                Join Existing Project
+              </button>
+            </div>
+          )}
 
-        {showCreateForm && (
-          <form onSubmit={handleCreateProject} className="space-y-4 mt-6">
-            <h2 className="text-xl font-semibold">Create New Project</h2>
-            <div>
-              <label htmlFor="projectName" className="block text-sm font-medium text-gray-700">
-                Project Name
-              </label>
-              <input
-                type="text"
-                id="projectName"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-700">
-                Project Description
-              </label>
-              <textarea
-                id="projectDescription"
-                value={projectDescription}
-                onChange={(e) => setProjectDescription(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
-            >
-              Create Project
-            </button>
-            {error && <p className="text-red-500">{error}</p>}
-          </form>
-        )}
+          {showCreateForm && (
+            <form onSubmit={handleCreateProject} className="space-y-4 mt-6">
+              <h2 className="text-xl font-semibold">Create New Project</h2>
+              <div>
+                <label htmlFor="projectName" className="block text-sm font-medium text-gray-700">
+                  Project Name
+                </label>
+                <input
+                  type="text"
+                  id="projectName"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-700">
+                  Project Description
+                </label>
+                <textarea
+                  id="projectDescription"
+                  value={projectDescription}
+                  onChange={(e) => setProjectDescription(e.target.value)}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                Create Project
+              </button>
+              {error && <p className="text-red-500">{error}</p>}
+            </form>
+          )}
 
-        {showJoinForm && (
-          <form onSubmit={handleJoinProject} className="space-y-4 mt-6">
-            <h2 className="text-xl font-semibold">Join Existing Project</h2>
-            <div>
-              <label htmlFor="joinProjectId" className="block text-sm font-medium text-gray-700">
-                Project ID
-              </label>
-              <input
-                type="text"
-                id="joinProjectId"
-                value={joinProjectId}
-                onChange={(e) => setJoinProjectId(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="joinProjectPasskey" className="block text-sm font-medium text-gray-700">
-                Passkey
-              </label>
-              <input
-                type="password"
-                id="joinProjectPasskey"
-                value={joinProjectPasskey}
-                onChange={(e) => setJoinProjectPasskey(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300"
-            >
-              Join Project
-            </button>
-            {error && <p className="text-red-500">{error}</p>}
-          </form>
-        )}
+          {showJoinForm && (
+            <form onSubmit={handleJoinProject} className="space-y-4 mt-6">
+              <h2 className="text-xl font-semibold">Join Existing Project</h2>
+              <div>
+                <label htmlFor="joinProjectId" className="block text-sm font-medium text-gray-700">
+                  Project ID
+                </label>
+                <input
+                  type="text"
+                  id="joinProjectId"
+                  value={joinProjectId}
+                  onChange={(e) => setJoinProjectId(e.target.value)}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="joinProjectPasskey" className="block text-sm font-medium text-gray-700">
+                  Passkey
+                </label>
+                <input
+                  type="password"
+                  id="joinProjectPasskey"
+                  value={joinProjectPasskey}
+                  onChange={(e) => setJoinProjectPasskey(e.target.value)}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300"
+              >
+                Join Project
+              </button>
+              {error && <p className="text-red-500">{error}</p>}
+            </form>
+          )}
 
-        {hasProjects && (
-          <div className="mt-6">
-            <button
-              onClick={() => {
-                setShowCreateForm((prev) => !prev);
-                setShowJoinForm(false);
-              }}
-              className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 w-full mb-4"
-            >
-              Create New Project
-            </button>
-            <button
-              onClick={() => {
-                setShowJoinForm((prev) => !prev);
-                setShowCreateForm(false);
-              }}
-              className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 w-full mb-4"
-            >
-              Join Existing Project
-            </button>
-            <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
-            <ul className="space-y-4">
-              {projects.map((project) => (
-                <li key={project.id} className="border p-4 rounded-lg shadow-sm bg-white bg-opacity-90">
-                  <h3 className="text-lg font-bold">{project.name}</h3>
-                  <p>{project.description}</p>
-                  <button
-                    onClick={() => {
-                      dispatch(setCurrentProject(project));
-                      navigate('/dashboard');
-                    }}
-                    className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 mt-2"
-                  >
-                    Go to Project
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          {hasProjects && (
+            <div className="mt-6">
+              <button
+                onClick={() => {
+                  setShowCreateForm((prev) => !prev);
+                  setShowJoinForm(false);
+                }}
+                className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 w-full mb-4"
+              >
+                Create New Project
+              </button>
+              <button
+                onClick={() => {
+                  setShowJoinForm((prev) => !prev);
+                  setShowCreateForm(false);
+                }}
+                className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 w-full mb-4"
+              >
+                Join Existing Project
+              </button>
+              <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
+              <ul className="space-y-4">
+                {projects.map((project) => (
+                  <li key={project.id} className="border p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold">{project.name}</h3>
+                    <p>{project.description}</p>
+                    <button
+                      onClick={() => {dispatch(setCurrentProject(project))
+                        navigate('/dashboard');
+                      }
+                        
+                      }
+                      
+                      className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 mt-2"
+                    >
+                      Go to Project
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Instructions Section */}
+        <div className="bg-white bg-opacity-40 p-8 rounded-lg shadow-lg max-w-md mx-auto flex-1 max-h-72 self-center lato-regular">
+          <h2 className="text-xl font-semibold mb-4"> INSTRUCTIONS &#40;for best experience&#41;</h2>
+          <p className="mb-4">
+            Click on <strong>Join Existing Project</strong>
+          </p>
+          <p className="mb-4">
+            Copy paste the following : <br />
+              <strong>Project ID</strong> : 123456 <br />
+              <strong>Passkey</strong> : 123456
+          </p>
+          <p>
+            Click on <strong>Join Project</strong> to join the project
+          </p>
+        </div>
       </div>
     </div>
   );
