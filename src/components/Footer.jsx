@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Mail, Github, Twitter, Linkedin } from 'lucide-react';
-import '@/index.css'; // Ensure your CSS is imported
+import '@/index.css'; 
 
 const Footer = () => {
   return (
