@@ -29,6 +29,7 @@ const ChooseProjectPage = () => {
   const [joinProjectPasskey, setJoinProjectPasskey] = useState('');
   const [error, setError] = useState('');
   const [projects, setProjectsState] = useState([]);
+  const [deadline, setDeadline] = useState(null)
 
   const firestore = getFirestore();
 
@@ -62,6 +63,7 @@ const ChooseProjectPage = () => {
         passkey: passkey,
         members: [auth.currentUser.uid],
         leader: auth.currentUser.displayName,
+        deadline: deadline
       };
 
       await setDoc(doc(firestore, 'projects', projectId), newProject);
