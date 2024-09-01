@@ -261,15 +261,15 @@ const ChooseProjectPage = () => {
         </div>
 
         {/* Instructions Section */}
-        <div className="bg-white bg-opacity-40 p-8 rounded-lg shadow-lg max-w-md mx-auto flex-1 max-h-72 self-center lato-regular">
+        <div className="bg-white bg-opacity-60 p-8 rounded-lg shadow-lg max-w-md mx-auto flex-1 max-h-72 self-center lato-regular">
           <h2 className="text-xl font-semibold mb-4"> INSTRUCTIONS &#40;for best experience&#41;</h2>
           <p className="mb-4">
             Click on <strong>Join Existing Project</strong>
           </p>
           <p className="mb-4">
             Copy paste the following : <br />
-              <strong>Project ID</strong> : 123456 <br />
-              <strong>Passkey</strong> : 123456
+              <strong>Project ID</strong> : 1725174479539 <br />
+              <strong>Passkey</strong> : g1j80s9xst8
           </p>
           <p>
             Click on <strong>Join Project</strong> to join the project
