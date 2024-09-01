@@ -10,7 +10,6 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [Contact](#contact)
 
 ## Introduction
 
@@ -55,30 +54,30 @@ To get a local copy up and running, follow these steps:
 
     Make sure you have Node.js and npm installed.
 
-  ```bash
-  npm install
-  ```
+   ```bash
+   npm install
+   ```
 
 3. **Set Up Firebase:**
 
-   *Create a Firebase project and add your web app.
-   *Obtain your Firebase config object and replace the placeholders in src/firebaseConfig.js.
-   *Enable Firebase Authentication and Firestore in the Firebase console.  
+   - Create a Firebase project and add your web app.
+   - Obtain your Firebase config object and replace the placeholders in src/firebaseConfig.js.
+   - Enable Firebase Authentication and Firestore in the Firebase console.  
 
 4. **Run the Application:**
 
-  ```bash
-  npm run dev
-  ```
+   ```bash
+   npm run dev
+   ```
 
-The app should now be running on http://localhost:3000.
+   The app should now be running on http://localhost:3000.
 
 ## Usage
-*Login/Signup: Create an account or log in using your credentials.
-*Create/Join Project: Start a new project or join an existing one from the ChooseProjectPage.
-*Manage Tasks: Use the Kanban board to create, update, and track tasks.
-*Communicate: Use the real-time chat to stay connected with your team.
-*Customize Settings: Access the settings page to toggle themes or delete your account.
+- Login/Signup: Create an account or log in using your credentials.
+- Create/Join Project: Start a new project or join an existing one from the ChooseProjectPage.
+- Manage Tasks: Use the Kanban board to create, update, and track tasks.
+- Communicate: Use the real-time chat to stay connected with your team.
+- Customize Settings: Access the settings page to toggle themes or delete your account.
 
 ## Contributing
 Contributions are welcome! If you'd like to contribute to Syncify, please follow these steps:
@@ -91,5 +90,5 @@ Contributions are welcome! If you'd like to contribute to Syncify, please follow
 
 ## If you have any questions or feedback, feel free to reach out:
 
-GitHub: AdiShukla06
-LinkedIn: Aditya Shukla
+- GitHub: AdiShukla06
+- LinkedIn: Aditya Shukla
