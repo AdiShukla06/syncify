@@ -13,7 +13,7 @@ admin.initializeApp({
     type: String(process.env.SOCKET_TYPE),
     project_id: String(process.env.SOCKET_PROJECT_ID),
     private_key_id: String(process.env.SOCKET_PRIVATE_KEY_ID),
-    private_key: String(process.env.SOCKET_PRIVATE_KEY.replace(/\\n/g, '\n')),
+    private_key: String(process.env.SOCKET_PRIVATE_KEY).replace(/\\n/g, '\n'),
     client_email: String(process.env.SOCKET_CLIENT_EMAIL),
     client_id: String(process.env.SOCKET_CLIENT_ID),
     auth_uri: String(process.env.SOCKET_AUTH_URI),
