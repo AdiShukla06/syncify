@@ -3,12 +3,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 
-.kanban-board {
+.kanban-board-dark {
     min-height:100vh;
     display: flex;
     gap: 20px;
     padding: 20px;
     background-color: rgb(15, 15, 16);
+    /* border-radius: 8px; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+.kanban-board-light {
+    min-height:100vh;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
     /* border-radius: 8px; */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }

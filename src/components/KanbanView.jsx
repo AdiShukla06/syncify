@@ -114,7 +114,7 @@ const KanbanView = () => {
       )}
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="kanban-board">
+        <div className={` ${theme == 'light' ? 'kanban-board-light' : 'kanban-board-dark'}`}>
           <Droppable droppableId="To Do">
             {(provided) => (
               <div
