@@ -10,16 +10,16 @@ import cors from 'cors';
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert({
-    type: String(import.meta.env.VITE_SOCKET_TYPE),
-    project_id: String(import.meta.env.VITE_SOCKET_PROJECT_ID),
-    private_key_id: String(import.meta.env.VITE_SOCKET_PRIVATE_KEY_ID),
-    private_key: String(import.meta.env.VITE_SOCKET_PRIVATE_KEY.replace(/\\n/g, '\n')),
-    client_email: String(import.meta.env.VITE_SOCKET_CLIENT_EMAIL),
-    client_id: String(import.meta.env.VITE_SOCKET_CLIENT_ID),
-    auth_uri: String(import.meta.env.VITE_SOCKET_AUTH_URI),
-    token_uri: String(import.meta.env.VITE_SOCKET_TOKEN_URI),
-    auth_provider_x509_cert_url: String(import.meta.env.VITE_SOCKET_AUTH_PROVIDER_X509_CERT_URL),
-    client_x509_cert_url: String(import.meta.env.VITE_SOCKET_CLIENT_X509_CERT_URL),
+    type: String(process.env.VITE_SOCKET_TYPE),
+    project_id: String(process.env.VITE_SOCKET_PROJECT_ID),
+    private_key_id: String(process.env.VITE_SOCKET_PRIVATE_KEY_ID),
+    private_key: String(process.env.VITE_SOCKET_PRIVATE_KEY.replace(/\\n/g, '\n')),
+    client_email: String(process.env.VITE_SOCKET_CLIENT_EMAIL),
+    client_id: String(process.env.VITE_SOCKET_CLIENT_ID),
+    auth_uri: String(process.env.VITE_SOCKET_AUTH_URI),
+    token_uri: String(process.env.VITE_SOCKET_TOKEN_URI),
+    auth_provider_x509_cert_url: String(process.env.VITE_SOCKET_AUTH_PROVIDER_X509_CERT_URL),
+    client_x509_cert_url: String(process.env.VITE_SOCKET_CLIENT_X509_CERT_URL),
   })
 });
 
@@ -97,3 +97,4 @@ io.on('connection', (socket) => {
 server.listen(3001, () => {
   console.log('Listening on *:3001');
 });
+
