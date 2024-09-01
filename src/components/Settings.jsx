@@ -15,6 +15,7 @@ const SettingsPage = () => {
   const currentProject = useSelector((state) => state.project.currentProject);
   const [isLeader, setIsLeader] = useState(false); 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); 
+  const [passkey, setPasskey] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +28,7 @@ const SettingsPage = () => {
           const projectData = projectDoc.data();
           if (projectData.members[0] === user.uid) {
             setIsLeader(true); 
+            setPasskey(projectData.passkey || ''); 
           }
         }
       };
@@ -129,21 +131,34 @@ const SettingsPage = () => {
       </motion.div>
 
       {isLeader && (
-        <motion.div 
-          className="project-deletion"
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-        >
-          <h3 className="text-2xl font-semibold mb-4">Delete Project</h3>
-          <p className="mb-4 text-gray-400">Warning: This will delete the entire project and cannot be undone.</p>
-          <button 
-            onClick={deleteProject} 
-            className="px-6 py-3 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition duration-300 ease-in-out"
+        <>
+          <motion.div 
+            className="project-info mb-8"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.6 }}
           >
-            Delete Project
-          </button>
-        </motion.div>
+            <h3 className="text-2xl font-semibold mb-4">Project Information</h3>
+            <p className="mb-2 text-gray-400">Project ID: <span className="font-medium text-gray-100">{currentProject.id}</span></p>
+            <p className="mb-4 text-gray-400">Passkey: <span className="font-medium text-gray-100">{passkey}</span></p>
+          </motion.div>
+          
+          <motion.div 
+            className="project-deletion"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
+            <h3 className="text-2xl font-semibold mb-4">Delete Project</h3>
+            <p className="mb-4 text-gray-400">Warning: This will delete the entire project and cannot be undone.</p>
+            <button 
+              onClick={deleteProject} 
+              className="px-6 py-3 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition duration-300 ease-in-out"
+            >
+              Delete Project
+            </button>
+          </motion.div>
+        </>
       )}
 
       {showDeleteConfirm && (
