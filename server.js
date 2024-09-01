@@ -29,6 +29,7 @@ const app = express();
 const server = http.createServer(app);
 
 const allowedOrigins = [
+  'https://syncify-s8i1.onrender.com/', // Deployed Render app
   'https://syncify-pink.vercel.app', // Deployed Vercel app
   'http://localhost:5173' // Local development
    
